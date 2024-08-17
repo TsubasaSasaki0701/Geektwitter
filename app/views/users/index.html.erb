@@ -1,0 +1,11 @@
+<h1>ユーザー検索</h1>
+<%= search_form_for @q, url: search_users_path do |f| %>
+    <%= f.label :name, 'ユーザー名' %>
+    <%= f.search_field :name %>
+    <br>
+    <%= f.submit '検索' %>
+<% end %>
+
+<% @users.each do |t| %>
+    <h1><%= t.name %></h1>
+<% end %>

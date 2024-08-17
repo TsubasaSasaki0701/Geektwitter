@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Geektwitter</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  <style>
+    /* ローディング画面のスタイル */
+    #loader {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      z-index: 9999;
+      display: none; /* 初期状態は非表示 */
+      justify-content: center;
+      align-items: center;
+    }
+    .loader-animation {
+      border: 16px solid #f3f3f3;
+      border-top: 16px solid #3498db;
+      border-radius: 50%;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="loader">
+    <div class="loader-animation"></div>
+  </div>
+  <header>
+    <h1>GeekTwitter</h1>
+    <div class="header-list">
+      <ul>
+        <% if user_signed_in? %>
+          <li><%= button_to 'Logout', destroy_user_session_path, method: :delete, data: { turbo: false } %></li>
+        <% else %>
+          <li><%= link_to 'Login', new_user_session_path %></li>
+        <% end %>
+        <li><%= link_to "ホーム", tweets_path %></li>
+        <li><%= link_to "新規投稿", new_tweet_path %></li>
+      </ul>
+    </div>
+  </header>
+  <main>
+    <%= yield %>
+  </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var links = document.querySelectorAll('a');
+      links.forEach(function(link) {
+        link.addEventListener('click', function(event) {
+          if (link.target === '' || link.target === '_self') {
+            event.preventDefault(); // デフォルトのリンク動作を停止
+            var loader = document.getElementById('loader');
+            loader.style.display = 'flex'; // ローディング画面を表示
+            var href = link.href;
+            setTimeout(function() {
+              window.location.href = href; // 指定されたリンク先にリダイレクト
+            }, 500); // 500msのディレイを設定（任意で調整）
+          }
+        });
+      });
+
+      // フォーム送信時のローディングアニメーション表示
+      var forms = document.querySelectorAll('form');
+      forms.forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+          var loader = document.getElementById('loader');
+          loader.style.display = 'flex'; // ローディング画面を表示
+        });
+      });
+    });
+  </script>
+</body>
+</html>

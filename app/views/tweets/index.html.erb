@@ -1,0 +1,34 @@
+<h1>GeekTwitter</h1>
+<%= button_to 'ログアウト', destroy_user_session_path, method: :delete %> 
+<h3>Tweet一覧</h3>
+<%= link_to "新規投稿へ", new_tweet_path %>
+<div class="tweets-container">
+    <% @tweets.each do |t| %>
+        <div class="tweet">
+            <%= t.body %>
+            <%= t.created_at %>
+            <% if t.photo.attached? %>
+                <%= image_tag t.photo, size: '250x200'%>
+            <% end %>
+            <% if user_signed_in? %>
+                <% if current_user.already_liked?(t) %>
+                    <%= button_to tweet_like_path(id: t.id, tweet_id: t.id), method: :delete, class: "button-13" do %>
+                        ♡<%= t.likes.count %>
+                    <% end %>
+                <% else %>
+                    <%= button_to tweet_likes_path(id: t.id, tweet_id: t.id), method: :post, class: "button-13" do %>
+                        ♡<%= t.likes.count %>
+                    <% end %>
+                <% end %>
+            <% end %>
+            <br>
+            <%= link_to t.user.name, user_path(t.user.id) %>
+            <%= image_tag t.image_url, size: "250x200" if t.image? %>
+            <%= link_to "詳細へ", tweet_path(t.id) %> 
+            <%= link_to "編集する", edit_tweet_path(t.id) %>
+            <%= link_to "削除する", tweet_path(t.id), method: :delete %> 
+        </div>
+    <% end %>
+</div>
+
+<iframe src="https://www.youtube.com/embed/_CT_W52aZcw" title="前田祇園山笠 2024 競演会" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
